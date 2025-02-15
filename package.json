@@ -6,18 +6,30 @@
   "engines": {
     "vscode": "^1.96.0"
   },
-  "categories": [
-    "Other"
-  ],
-  "activationEvents": [],
-  "main": "./extension.js",
+  "categories": ["Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./src/extension.js",
   "contributes": {
     "commands": [
+      {
+        "command": "extension.autofillCommitMessage",
+        "title": "Autofill Commit Message"
+      },
       {
         "command": "extension.getCommitMessage",
         "title": "Get Commit Message"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "TestOne",
+      "properties": {
+        "testone.backendUrl": {
+          "type": "string",
+          "default": "http://localhost:8000",
+          "description": "The URL of the backend server for generating commit messages."
+        }
+      }
+    }
   },
   "enabledApiProposals": ["terminalDataWriteEvent"],
   "scripts": {
