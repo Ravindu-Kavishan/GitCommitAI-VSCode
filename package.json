@@ -33,7 +33,7 @@
       "properties": {
         "testone.backendUrl": {
           "type": "string",
-          "default": "http://localhost:8000",
+          "default": "https://test-6-wda6.onrender.com",
           "description": "The URL of the backend server for generating commit messages."
         }
       }
