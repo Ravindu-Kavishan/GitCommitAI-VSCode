@@ -22,6 +22,10 @@
       {
         "command": "extension.getCommitMessage",
         "title": "Get Commit Message"
+      },
+      {
+        "command": "extension.autofillCommitMessage",
+        "title": "Autofill Commit Message"
       }
     ],
     "configuration": {
