@@ -14,7 +14,7 @@
   "contributes": {
     "commands": [
       {
-        "command": "testone.getCommitMessage",
+        "command": "extension.getCommitMessage",
         "title": "Get Commit Message"
       }
     ]
