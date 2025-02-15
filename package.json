@@ -12,8 +12,12 @@
   "contributes": {
     "commands": [
       {
-        "command": "extension.autofillCommitMessage",
-        "title": "Autofill Commit Message"
+        "command": "extension.singleLineCommitMessage",
+        "title": "Generete Single Line Commit Messages"
+      },
+      {
+        "command": "extension.multiLineCommitMessage",
+        "title": "Generete Multi Line Commit Messages"
       },
       {
         "command": "extension.getCommitMessage",

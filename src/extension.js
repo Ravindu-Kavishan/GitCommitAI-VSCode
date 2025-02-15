@@ -10,11 +10,12 @@ const {
   createMenuButton,
   registerMenuCommand,
 } = require("./utils/statusBarButton");
+const { isGitRepository } = require("./utils/isGitRepository");
 
 /**
  * @param {vscode.ExtensionContext} context
  */
-function activate(context) {
+async function activate(context) {  // Make activate async
   console.log('Your extension "testone" is now active!');
 
   // Create the "Autofill Commit" button
@@ -25,6 +26,20 @@ function activate(context) {
 
   // Register the menu command
   registerMenuCommand(context);
+
+  // Check if the folder is a Git repository
+  try {
+    const isRepo = await isGitRepository(); // Await the result
+    if (isRepo) {
+      autofillButton.show();
+      menuButton.show();
+    } else {
+      autofillButton.hide();
+      menuButton.hide();
+    }
+  } catch (error) {
+    vscode.window.showErrorMessage(`Git Check Error: ${error}`);
+  }
 
   // Register the autofill commit message command
   const autofillCommand = vscode.commands.registerCommand(
