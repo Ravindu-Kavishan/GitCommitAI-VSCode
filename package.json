@@ -1,23 +1,32 @@
 {
   "name": "testone",
-  "displayName": "TestOne",
+  "displayName": "SmartCommit",
+  "publisher": "RavinduKavishan",
   "description": "A VS Code extension that predicts a commit message based on Git differences.",
-  "version": "0.0.1",
+  "version": "0.0.6",
   "engines": {
     "vscode": "^1.96.0"
   },
-  "categories": ["Other"],
-  "activationEvents": ["onStartupFinished"],
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./src/extension.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ravindu-Kavishan/GitCommitAI-VSCode.git"
+  },
   "contributes": {
     "commands": [
       {
         "command": "extension.singleLineCommitMessage",
-        "title": "Generete Single Line Commit Messages"
+        "title": "Generate Single Line Commit Messages"
       },
       {
         "command": "extension.multiLineCommitMessage",
-        "title": "Generete Multi Line Commit Messages"
+        "title": "Generate Multi Line Commit Messages"
       },
       {
         "command": "extension.getCommitMessage",
@@ -33,13 +42,12 @@
       "properties": {
         "testone.backendUrl": {
           "type": "string",
-          "default": "https://test-6-wda6.onrender.com",
+          "default": "https://test-7-3wr8.onrender.com",
           "description": "The URL of the backend server for generating commit messages."
         }
       }
     }
   },
-  "enabledApiProposals": ["terminalDataWriteEvent"],
   "scripts": {
     "lint": "eslint .",
     "pretest": "npm run lint",

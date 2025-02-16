@@ -6,7 +6,7 @@ const sharedContext = require("./sharedContext");
 
 async function generateCommitMessage(gitDiff) {
   const config = vscode.workspace.getConfiguration("testone");
-  const backendUrl = config.get("backendUrl", "https://test-6-wda6.onrender.com");
+  const backendUrl = config.get("backendUrl", "https://test-7-3wr8.onrender.com");
 
   const response = await axios.post(`${backendUrl}/generateCommit`, {
     git_diff: gitDiff,
