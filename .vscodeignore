@@ -1,6 +1,27 @@
+# Ignore everything by default
+*
+
+# Include the following files and directories
 !LICENSE
 !src/
 !README.md
 !CHANGELOG.md
 !package.json
 !extension.js
+!commands/
+!utils/
+!node_modules/      # <-- Include node_modules
+
+# Exclude unnecessary files and directories
+.vscode/**
+.vscode-test/**
+test/**
+.gitignore
+.yarnrc
+vsc-extension-quickstart.md
+**/jsconfig.json
+**/*.map
+**/eslint.config.mjs
+**/.vscode-test.*
+package-lock.json
+testone-0.0.5.vsix
