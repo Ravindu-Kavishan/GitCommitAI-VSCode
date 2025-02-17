@@ -1,6 +1,6 @@
 const vscode = require("vscode");
 const sharedContext = require("../utils/sharedContext"); // Import the shared context
-const {isGitRepository} = require("../utils/isGitRepository")
+
 /**
  * Handles the multi line commit message functionality.
  */
