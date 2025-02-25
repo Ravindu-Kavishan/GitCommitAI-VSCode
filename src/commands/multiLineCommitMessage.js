@@ -6,7 +6,7 @@ const sharedContext = require("../utils/sharedContext"); // Import the shared co
  */
 async function multiLineCommitMessage() {
   // Change the commit_type to "Multi Line"
-  sharedContext.commit_type = "Multi Line";
+  sharedContext.commit_type = "multiline";
   // Add your logic for multi line commit messages here
   vscode.window.showInformationMessage("Multi Line Commit Message Selected");
 }
