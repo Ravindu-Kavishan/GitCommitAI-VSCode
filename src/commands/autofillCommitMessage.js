@@ -36,10 +36,7 @@ async function autofillCommitMessage() {
   }
 }
 
-/**
- * Handles errors and displays appropriate messages to the user.
- * @param {Error} error - The error object.
- */
+
 function handleError(error) {
   if (error.response) {
     vscode.window.showErrorMessage(`Backend Error: ${error.response.data.message}`);

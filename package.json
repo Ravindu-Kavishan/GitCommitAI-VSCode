@@ -3,7 +3,7 @@
   "displayName": "SmartCommit",
   "publisher": "RavinduKavishan",
   "description": "A VS Code extension that predicts a commit message based on Git differences.",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "engines": {
     "vscode": "^1.96.0"
   },
@@ -43,7 +43,7 @@
       "properties": {
         "testone.backendUrl": {
           "type": "string",
-          "default": "https://test-7-3wr8.onrender.com",
+          "default": "https://gitcommitai-backend-6.onrender.com",
           "description": "The URL of the backend server for generating commit messages."
         }
       }
