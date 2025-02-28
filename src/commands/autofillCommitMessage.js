@@ -4,8 +4,6 @@ const { generateCommitMessage } = require("../utils/apiUtils");
 
 async function autofillCommitMessage(webviewView) {  // Add webviewView parameter here
   try {
-    // Stage all changes using `git add .`
-    console.log("good");
     await stageAllChanges();
 
     // Get the Git diff of staged changes

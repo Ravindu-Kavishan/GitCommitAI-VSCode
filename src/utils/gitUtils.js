@@ -49,4 +49,24 @@ function getGitDiff() {
   });
 }
 
-module.exports = { stageAllChanges, getGitDiff };
+function commitAllChanges(message) {
+  return new Promise((resolve, reject) => {
+    exec(
+      `git commit -m "${message}"`, // Corrected to use backticks and proper string interpolation
+      { cwd: vscode.workspace.rootPath }, // Ensure that the cwd (current working directory) is set correctly
+      (error, stdout, stderr) => {
+        if (error) {
+          reject(`Error: ${error.message}`);
+          return;
+        }
+        if (stderr) {
+          reject(`stderr: ${stderr}`);
+          return;
+        }
+        resolve(stdout); // Return stdout or anything you want to indicate success
+      }
+    );
+  });
+}
+
+module.exports = { stageAllChanges, getGitDiff,commitAllChanges };

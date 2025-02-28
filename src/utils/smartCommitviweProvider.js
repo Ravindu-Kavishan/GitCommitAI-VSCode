@@ -1,5 +1,6 @@
 const vscode = require("vscode");
 const { autofillCommitMessage } = require("../commands/autofillCommitMessage");
+const { commit } = require("./commit");
 
 class SmartCommitViewProvider {
   constructor(extensionUri) {
@@ -20,9 +21,11 @@ class SmartCommitViewProvider {
     panel.onDidReceiveMessage((message) => {
       switch (message.command) {
         case "autofillCommitMessage":
-          autofillCommitMessage(webviewView);  // Pass webviewView to autofillCommitMessage
+          autofillCommitMessage(webviewView);
           break;
-        // Handle other messages if necessary
+        case "commit":
+          commit(message.commitmessage);  // Pass commit message to function
+          break;
         default:
           console.log("Unknown command", message.command);
       }
@@ -89,30 +92,32 @@ class SmartCommitViewProvider {
     </div>
 
     <script>
-        const vscode = acquireVsCodeApi();  // Ensure acquireVsCodeApi() is called inside the webview context
+        const vscode = acquireVsCodeApi();
 
-        // Send a message to VS Code when the 'Autofill Commit' button is clicked
         document.getElementById("autofillBtn").addEventListener("click", () => {
-            vscode.postMessage({ command: "autofillCommitMessage" });  // Send command to VS Code
+            vscode.postMessage({ command: "autofillCommitMessage" });
         });
 
-        // Handle the expand options toggle
+        document.getElementById("commitBtn").addEventListener("click", () => {
+            const commitMessage = document.getElementById("commitMessage").value;
+            vscode.postMessage({ command: "commit", commitmessage: commitMessage });  // Corrected syntax
+            document.getElementById("commitMessage").value = ""; 
+        });
+
         document.getElementById("expandBtn").addEventListener("click", () => {
           const options = document.getElementById("expandOptions");
           options.classList.toggle("hidden");
         });
 
-        // Handle the add rules button
         document.getElementById("addrulesBtn").addEventListener("click", () => {
-          document.getElementById("commitMessage").value = "good";  // For demo purposes
+          document.getElementById("commitMessage").value = "good";
         });
 
-        // Listen for messages from VS Code and update the input field with the commit message
         window.addEventListener("message", (event) => {
           const message = event.data;
           switch (message.command) {
             case "setCommitMessage":
-              document.getElementById("commitMessage").value = message.message;  // Autofill the commit message
+              document.getElementById("commitMessage").value = message.message;
               break;
             default:
               console.log("Unknown command", message.command);
