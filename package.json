@@ -61,7 +61,7 @@
       "properties": {
         "testone.backendUrl": {
           "type": "string",
-          "default": "https://gitcommitai-backend-6.onrender.com",
+          "default": "http://127.0.0.1:8000/generate-commit-message/",
           "description": "The URL of the backend server for generating commit messages."
         }
       }

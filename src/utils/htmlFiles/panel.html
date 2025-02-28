@@ -1,4 +1,3 @@
-<!-- panel.html -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -11,9 +10,15 @@
       <input
         id="commitMessage"
         type="text"
-        placeholder="Enter commit message..."
+        placeholder="Type Commit With Suggestions"
         class="w-full p-1 border border-gray-600 rounded-sm shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-gray-800 text-white"
       />
+      <button
+        id="commitBtn"
+        class="w-full p-1 bg-blue-800 text-white rounded-sm hover:bg-blue-600 transition duration-200"
+      >
+        Commit
+      </button>
       <div class="flex">
         <button
           id="autofillBtn"
@@ -34,11 +39,11 @@
         class="hidden mt-4 w-full flex flex-col items-center space-y-4"
       >
         <div class="flex items-center">
-          <input type="radio" name="option" class="mr-2" />
+          <input type="radio" name="option" value="single" class="mr-2" />
           <span>Single Line Commit Message</span>
         </div>
         <div class="flex items-center">
-          <input type="radio" name="option" class="mr-2" />
+          <input type="radio" name="option" value="multi" class="mr-2" />
           <span>Multi Line Commit Message</span>
         </div>
       </div>
@@ -52,17 +57,39 @@
     </div>
 
     <script>
-      document.getElementById("autofillBtn").addEventListener("click", () => {
-        const message = document.getElementById("commitMessage").value;
+      const vscode = acquireVsCodeApi(); // Access the vscode API
+
+      // Listen for messages from the extension
+      window.addEventListener("message", (event) => {
+        const data = event.data;
+        if (data.command === "setCommitMessage") {
+          // Set the commit message in the input field
+          document.getElementById("commitMessage").value = data.message;
+        }
       });
 
+      // Send a message to the VS Code extension to autofill the commit message
+      document
+        .getElementById("autofillBtn")
+        .addEventListener("click", async () => {
+          try {
+            console.log("samadi");
+            // Post a message to the extension asking for the autofilled commit message
+            vscode.postMessage({ command: "autofillCommitMessage" });
+          } catch (error) {
+            console.error("Error sending autofill commit message request:", error);
+          }
+        });
+
+      // Handle the expand options toggle
       document.getElementById("expandBtn").addEventListener("click", () => {
         const options = document.getElementById("expandOptions");
         options.classList.toggle("hidden");
       });
 
+      // Handle the add rules button
       document.getElementById("addrulesBtn").addEventListener("click", () => {
-        const message = document.getElementById("commitMessage").value;
+        document.getElementById("commitMessage").value = "good";
       });
     </script>
   </body>

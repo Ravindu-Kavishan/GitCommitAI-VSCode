@@ -1,14 +1,11 @@
 const vscode = require("vscode");
 const { getGitDiff, stageAllChanges } = require("../utils/gitUtils");
 const { generateCommitMessage } = require("../utils/apiUtils");
-const { delay } = require("../utils/delay");
 
-/**
- * Autofills the commit message in the Source Control input box.
- */
-async function autofillCommitMessage() {
+async function autofillCommitMessage(webviewView) {  // Add webviewView parameter here
   try {
     // Stage all changes using `git add .`
+    console.log("good");
     await stageAllChanges();
 
     // Get the Git diff of staged changes
@@ -18,24 +15,18 @@ async function autofillCommitMessage() {
       vscode.window.showWarningMessage("No staged changes found!");
       return;
     }
-
-    // Generate the commit message using the backend API
     const commitMessage = await generateCommitMessage(gitdiff);
-
-    // Switch to the Source Control view
-    await vscode.commands.executeCommand("workbench.view.scm");
-    await delay(500);
-
-    // Type the commit message into the Source Control input box
-    await vscode.commands.executeCommand("type", { text: commitMessage });
-
-    // Notify the user that the commit message is ready
+    
+    // Show information in VS Code window
     vscode.window.showInformationMessage("Commit message autofilled!");
+
+    // Send the generated commit message back to the webview using webviewView.webview.postMessage
+    console.log(commitMessage);
+    webviewView.webview.postMessage({ command: "setCommitMessage", message: commitMessage });
   } catch (error) {
     handleError(error);
   }
 }
-
 
 function handleError(error) {
   if (error.response) {

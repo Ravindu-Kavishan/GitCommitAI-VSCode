@@ -3,7 +3,7 @@ const vscode = require("vscode");
 const sharedContext = require("./sharedContext");
 
 async function generateCommitMessage(gitDiff) {
-  const backendUrl = "https://gitcommitai-backend-6.onrender.com/generate-commit-message/";
+  const backendUrl = "http://127.0.0.1:8000/generate-commit-message/";
 
 
   try {
@@ -12,7 +12,7 @@ async function generateCommitMessage(gitDiff) {
       message_type: sharedContext.commit_type,
     });
 
-    console.log("Response:", response.data);
+    // console.log("Response:", response.data);
     return response.data.commit_message;
   } catch (error) {
     console.error("Error response:", error.response?.data);
