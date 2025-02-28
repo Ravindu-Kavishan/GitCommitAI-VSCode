@@ -18,8 +18,6 @@ async function autofillCommitMessage(webviewView) {  // Add webviewView paramete
     // Show information in VS Code window
     vscode.window.showInformationMessage("Commit message autofilled!");
 
-    // Send the generated commit message back to the webview using webviewView.webview.postMessage
-    console.log(commitMessage);
     webviewView.webview.postMessage({ command: "setCommitMessage", message: commitMessage });
   } catch (error) {
     handleError(error);

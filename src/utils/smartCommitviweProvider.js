@@ -7,6 +7,7 @@ const {
 const {
   multiLineCommitMessage,
 } = require("../commands/multiLineCommitMessage");
+const { makeSuggestion } = require("./makesuggestions");
 
 class SmartCommitViewProvider {
   constructor(extensionUri) {
@@ -37,6 +38,9 @@ class SmartCommitViewProvider {
           break;
         case "multiLineCommit":
           multiLineCommitMessage();
+          break;
+        case "makesuggestions":
+          makeSuggestion(message.commitmessage, webviewView);
           break;
         default:
           console.log("Unknown command", message.command);
@@ -97,12 +101,14 @@ class SmartCommitViewProvider {
       </div>
 
       <button
-        id="addrulesBtn"
+        id="suggestionsBtn"
         class="w-full p-1 bg-blue-800 text-white rounded-sm hover:bg-blue-600 transition duration-200"
       >
-        Add Rules
+        Generete  suggestions About Commit Message 
       </button>
     </div>
+    <p id="suggestionParagraph" class="w-full p-1  text-white rounded-sm hover:bg-blue-600 transition duration-200">Ravi</p>
+
 
     <script>
         const vscode = acquireVsCodeApi();
@@ -144,8 +150,27 @@ class SmartCommitViewProvider {
           });
         });
 
-        document.getElementById("addrulesBtn").addEventListener("click", () => {
-          document.getElementById("commitMessage").value = "good";
+        document.getElementById("suggestionsBtn").addEventListener("click", () => {
+          const commit_Message = document.getElementById("commitMessage").value;
+          vscode.postMessage({ command: "makesuggestions", commitmessage: commit_Message });
+        });
+
+        window.addEventListener("message", (event) => {
+          const message = event.data;
+          switch (message.command) {
+            case "setSuggestionMessage":
+              const suggestionParagraph = document.getElementById("suggestionParagraph");
+              suggestionParagraph.innerHTML = ""; // Clear previous content
+              message.message.forEach((line) => {
+                // Create a new paragraph for each suggestion line
+                const p = document.createElement("p");
+                p.textContent = line;
+                suggestionParagraph.appendChild(p);
+              });
+              break;
+            default:
+              console.log("Unknown command", message.command);
+          }
         });
 
     </script>

@@ -23,4 +23,25 @@ async function generateCommitMessage(gitDiff) {
   }
 }
 
-module.exports = { generateCommitMessage };
+
+async function generateCommitSuggestions(commitmessage) {
+  const backendUrl = "http://127.0.0.1:8000/generate-commit-suggestions/";
+
+
+  try {
+    const response = await axios.post(backendUrl, {
+      commit_message: commitmessage,
+    });
+
+    // console.log("Response:", response.data);
+    return response.data.suggestions;
+  } catch (error) {
+    console.error("Error response:", error.response?.data);
+    vscode.window.showErrorMessage(
+      `Backend error: ${error.response?.status} - ${error.response?.data?.message || error.message}`
+    );
+    return null;
+  }
+}
+
+module.exports = { generateCommitMessage ,generateCommitSuggestions};
