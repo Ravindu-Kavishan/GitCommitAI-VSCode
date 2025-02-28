@@ -20,6 +20,24 @@
     "url": "https://github.com/Ravindu-Kavishan/GitCommitAI-VSCode.git"
   },
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "SmartCommitContainer",
+          "title": "Rules",
+          "icon": "images/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "SmartCommitContainer": [
+        {
+          "id": "SmartCommitView",
+          "name": "Autofill Commit",
+          "type": "webview"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "extension.singleLineCommitMessage",

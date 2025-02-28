@@ -1,0 +1,70 @@
+<!-- panel.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Autofill Commit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="p-4 bg-black text-white">
+    <div class="flex flex-col space-y-4">
+      <input
+        id="commitMessage"
+        type="text"
+        placeholder="Enter commit message..."
+        class="w-full p-1 border border-gray-600 rounded-sm shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-gray-800 text-white"
+      />
+      <div class="flex">
+        <button
+          id="autofillBtn"
+          class="w-full p-1 bg-blue-800 text-white rounded-sm hover:bg-blue-600 transition duration-200"
+        >
+          Autofill Commit
+        </button>
+        <button
+          id="expandBtn"
+          class="p-1 bg-blue-800 text-white rounded-sm hover:bg-blue-600 transition duration-200 border-l-2 border-black"
+        >
+          v
+        </button>
+      </div>
+
+      <div
+        id="expandOptions"
+        class="hidden mt-4 w-full flex flex-col items-center space-y-4"
+      >
+        <div class="flex items-center">
+          <input type="radio" name="option" class="mr-2" />
+          <span>Single Line Commit Message</span>
+        </div>
+        <div class="flex items-center">
+          <input type="radio" name="option" class="mr-2" />
+          <span>Multi Line Commit Message</span>
+        </div>
+      </div>
+
+      <button
+        id="addrulesBtn"
+        class="w-full p-1 bg-blue-800 text-white rounded-sm hover:bg-blue-600 transition duration-200"
+      >
+        Add Rules
+      </button>
+    </div>
+
+    <script>
+      document.getElementById("autofillBtn").addEventListener("click", () => {
+        const message = document.getElementById("commitMessage").value;
+      });
+
+      document.getElementById("expandBtn").addEventListener("click", () => {
+        const options = document.getElementById("expandOptions");
+        options.classList.toggle("hidden");
+      });
+
+      document.getElementById("addrulesBtn").addEventListener("click", () => {
+        const message = document.getElementById("commitMessage").value;
+      });
+    </script>
+  </body>
+</html>

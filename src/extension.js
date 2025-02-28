@@ -11,21 +11,21 @@ const {
   registerMenuCommand,
 } = require("./utils/statusBarButton");
 const { isGitRepository } = require("./utils/isGitRepository");
+const SmartCommitViewProvider = require("./utils/smartCommitviweProvider");
 
-/**
- * @param {vscode.ExtensionContext} context
- */
+
 async function activate(context) {
-  console.log('Your extension "testone" is now active!');
+  console.log('Your extension "Smart Commit" is now active!');
 
-  // Create the "Autofill Commit" button
-  const autofillButton = createAutofillButton();
 
-  // Create the menu button (triple dot icon)
-  const menuButton = createMenuButton();
 
-  // Register the menu command
-  registerMenuCommand(context);
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider(
+      "SmartCommitView",
+      new SmartCommitViewProvider(context.extensionUri)
+    )
+  );
+
 
   // Function to update button visibility
   async function updateButtonVisibility() {
