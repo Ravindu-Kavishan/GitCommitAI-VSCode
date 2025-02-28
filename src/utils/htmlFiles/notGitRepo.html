@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="p-4 bg-black text-white">
+    <div class="flex justify-center w-full p-2">
+      <p class="text-gray-600 text-center">
+        The folder currently open doesn't have a Git repository.
+      </p>
+    </div>
+    <button
+      id="initGit"
+      class="w-full p-2 bg-blue-800 text-white rounded-sm hover:bg-blue-600 transition duration-200"
+    >
+      Initialize Repository
+    </button>
+    <script>
+      document.getElementById("initGit").addEventListener("click", () => {
+        vscode.postMessage({ command: "initializeGit" });
+      });
+    </script>
+  </body>
+</html>

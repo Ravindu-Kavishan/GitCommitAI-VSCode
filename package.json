@@ -24,7 +24,7 @@
       "activitybar": [
         {
           "id": "SmartCommitContainer",
-          "title": "Rules",
+          "title": "Ai Based",
           "icon": "images/icon.svg"
         }
       ]
@@ -33,7 +33,7 @@
       "SmartCommitContainer": [
         {
           "id": "SmartCommitView",
-          "name": "Autofill Commit",
+          "name": "Smart Commit",
           "type": "webview"
         }
       ]

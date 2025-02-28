@@ -12,7 +12,7 @@ const {
 } = require("./utils/statusBarButton");
 const { isGitRepository } = require("./utils/isGitRepository");
 const SmartCommitViewProvider = require("./utils/smartCommitviweProvider");
-
+const sharedContext = require("./utils/sharedContext");
 
 async function activate(context) {
   console.log('Your extension "Smart Commit" is now active!');
@@ -27,33 +27,31 @@ async function activate(context) {
   );
 
 
-  // Function to update button visibility
-  async function updateButtonVisibility() {
-    try {
-      const isRepo = await isGitRepository();
-      if (isRepo) {
-        autofillButton.show();
-        menuButton.show();
-      } else {
-        autofillButton.hide();
-        menuButton.hide();
-      }
-    } catch (error) {
-      vscode.window.showErrorMessage(`Git Check Error: ${error}`);
-    }
-  }
+  // // Function to update button visibility
+  // async function updateHTMLVisibility() {
+  //   try {
+  //     const isRepo = await isGitRepository();
+  //     if (isRepo) {
+  //        sharedContext.html_path="./htmlfiles/panel.html";
+  //     } else {
+  //       sharedContext.html_path="./htmlfiles/notGitRepo.html";     
+  //     }
+  //   } catch (error) {
+  //     vscode.window.showErrorMessage(`Git Check Error: ${error}`);
+  //   }
+  // }
 
-  // Initial check on activation
-  await updateButtonVisibility();
+  // // Initial check on activation
+  // await updateHTMLVisibility();
 
-  // Listen for changes in the workspace (e.g., when Git is initialized or removed)
-  const fileSystemWatcher = vscode.workspace.createFileSystemWatcher("**/.git");
-  fileSystemWatcher.onDidCreate(updateButtonVisibility);
-  fileSystemWatcher.onDidDelete(updateButtonVisibility);
-  fileSystemWatcher.onDidChange(updateButtonVisibility);
+  // // Listen for changes in the workspace (e.g., when Git is initialized or removed)
+  // const fileSystemWatcher = vscode.workspace.createFileSystemWatcher("**/.git");
+  // fileSystemWatcher.onDidCreate(updateHTMLVisibility);
+  // fileSystemWatcher.onDidDelete(updateHTMLVisibility);
+  // fileSystemWatcher.onDidChange(updateHTMLVisibility);
 
-  // Add the file watcher to subscriptions to clean up properly
-  context.subscriptions.push(fileSystemWatcher);
+  // // Add the file watcher to subscriptions to clean up properly
+  // context.subscriptions.push(fileSystemWatcher);
 
   // Register the autofill commit message command
   const autofillCommand = vscode.commands.registerCommand(
@@ -83,9 +81,7 @@ async function activate(context) {
     autofillCommand,
     singleLineCommand,
     multiLineCommand,
-    getCommitMessageCommand,
-    autofillButton,
-    menuButton
+    getCommitMessageCommand
   );
 }
 
