@@ -1,6 +1,12 @@
 const vscode = require("vscode");
 const { autofillCommitMessage } = require("../commands/autofillCommitMessage");
 const { commit } = require("./commit");
+const {
+  singleLineCommitMessage,
+} = require("../commands/singleLineCommitMessage");
+const {
+  multiLineCommitMessage,
+} = require("../commands/multiLineCommitMessage");
 
 class SmartCommitViewProvider {
   constructor(extensionUri) {
@@ -24,7 +30,13 @@ class SmartCommitViewProvider {
           autofillCommitMessage(webviewView);
           break;
         case "commit":
-          commit(message.commitmessage);  // Pass commit message to function
+          commit(message.commitmessage); // Pass commit message to function
+          break;
+        case "singleLineCommit":
+          singleLineCommitMessage();
+          break;
+        case "multiLineCommit":
+          multiLineCommitMessage();
           break;
         default:
           console.log("Unknown command", message.command);
@@ -42,12 +54,13 @@ class SmartCommitViewProvider {
   </head>
   <body class="p-4 bg-black text-white">
     <div class="flex flex-col space-y-4">
-      <input
+      <textarea
         id="commitMessage"
-        type="text"
         placeholder="Type Commit With Suggestions"
-        class="w-full p-1 border border-gray-600 rounded-sm shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-gray-800 text-white"
-      />
+        class="w-full p-1 border border-gray-600 rounded-sm shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-gray-800 text-white resize-none"
+        rows="3"
+      ></textarea>
+
       <button
         id="commitBtn"
         class="w-full p-1 bg-blue-800 text-white rounded-sm hover:bg-blue-600 transition duration-200"
@@ -98,6 +111,17 @@ class SmartCommitViewProvider {
             vscode.postMessage({ command: "autofillCommitMessage" });
         });
 
+        window.addEventListener("message", (event) => {
+          const message = event.data;
+          switch (message.command) {
+            case "setCommitMessage":
+              document.getElementById("commitMessage").value = message.message;
+              break;
+            default:
+              console.log("Unknown command", message.command);
+          }
+        });
+
         document.getElementById("commitBtn").addEventListener("click", () => {
             const commitMessage = document.getElementById("commitMessage").value;
             vscode.postMessage({ command: "commit", commitmessage: commitMessage });  // Corrected syntax
@@ -109,20 +133,21 @@ class SmartCommitViewProvider {
           options.classList.toggle("hidden");
         });
 
+        document.querySelectorAll("input[name='option']").forEach((radio) => {
+          radio.addEventListener("change", (event) => {
+            if (event.target.value === "single") {
+              vscode.postMessage({ command: "singleLineCommit" });
+            } else if (event.target.value === "multi") {
+              vscode.postMessage({ command: "multiLineCommit" });
+            }
+            console.log(event.target.value);
+          });
+        });
+
         document.getElementById("addrulesBtn").addEventListener("click", () => {
           document.getElementById("commitMessage").value = "good";
         });
 
-        window.addEventListener("message", (event) => {
-          const message = event.data;
-          switch (message.command) {
-            case "setCommitMessage":
-              document.getElementById("commitMessage").value = message.message;
-              break;
-            default:
-              console.log("Unknown command", message.command);
-          }
-        });
     </script>
   </body>
 </html>`;
