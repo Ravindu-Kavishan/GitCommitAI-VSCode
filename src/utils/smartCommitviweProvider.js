@@ -107,7 +107,7 @@ class SmartCommitViewProvider {
         Generete  suggestions About Commit Message 
       </button>
     </div>
-    <p id="suggestionParagraph" class="w-full p-1  text-white rounded-sm hover:bg-blue-600 transition duration-200">Ravi</p>
+    <div id="suggestionParagraph" class="hidden mt-4 p-4 bg-gray-900 rounded-md space-y-2"></div>
 
 
     <script>
@@ -153,25 +153,35 @@ class SmartCommitViewProvider {
         document.getElementById("suggestionsBtn").addEventListener("click", () => {
           const commit_Message = document.getElementById("commitMessage").value;
           vscode.postMessage({ command: "makesuggestions", commitmessage: commit_Message });
+          document.getElementById("suggestionParagraph").classList.remove("hidden");
         });
 
         window.addEventListener("message", (event) => {
-          const message = event.data;
-          switch (message.command) {
-            case "setSuggestionMessage":
-              const suggestionParagraph = document.getElementById("suggestionParagraph");
-              suggestionParagraph.innerHTML = ""; // Clear previous content
-              message.message.forEach((line) => {
-                // Create a new paragraph for each suggestion line
-                const p = document.createElement("p");
-                p.textContent = line;
-                suggestionParagraph.appendChild(p);
-              });
-              break;
-            default:
-              console.log("Unknown command", message.command);
-          }
-        });
+        const message = event.data;
+        switch (message.command) {
+          case "setSuggestionMessage":
+            const suggestionParagraph = document.getElementById("suggestionParagraph");
+            suggestionParagraph.innerHTML = ""; // Clear previous content
+            message.message.forEach((line, index) => {
+              const suggestionDiv = document.createElement("div");
+              suggestionDiv.className = "flex items-start space-x-2 p-2 bg-gray-800 border border-gray-700 rounded-md";
+              
+              const numberSpan = document.createElement("span");
+              numberSpan.className = "font-bold text-blue-400";
+              numberSpan.textContent = \`\${index + 1}.\`;
+              
+              const textSpan = document.createElement("span");
+              textSpan.textContent = line;
+              
+              suggestionDiv.appendChild(numberSpan);
+              suggestionDiv.appendChild(textSpan);
+              suggestionParagraph.appendChild(suggestionDiv);
+            });
+            break;
+          default:
+            console.log("Unknown command", message.command);
+        }
+      });
 
     </script>
   </body>
