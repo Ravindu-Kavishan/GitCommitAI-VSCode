@@ -3,7 +3,7 @@ const vscode = require("vscode");
 
 
 async function makeSuggestion(commitmessage, webviewView) {
-    let suggestion = "No suggestions available"; // Default message if empty
+    let suggestion = ["No suggestions available"]; // Default message if empty
     if (commitmessage === "") {
       vscode.window.showInformationMessage("Commit message is empty!");
     } else {

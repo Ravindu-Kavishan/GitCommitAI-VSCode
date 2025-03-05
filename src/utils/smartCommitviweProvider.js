@@ -91,7 +91,7 @@ class SmartCommitViewProvider {
         class="hidden mt-4 w-full flex flex-col items-center space-y-4"
       >
         <div class="flex items-center">
-          <input type="radio" name="option" value="single" class="mr-2" />
+          <input type="radio" name="option" value="single" class="mr-2" checked />
           <span>Single Line Commit Message</span>
         </div>
         <div class="flex items-center">
@@ -107,7 +107,11 @@ class SmartCommitViewProvider {
         Generete  suggestions About Commit Message 
       </button>
     </div>
-    <div id="suggestionParagraph" class="hidden mt-4 p-4 bg-gray-900 rounded-md space-y-2"></div>
+    <div id="suggestionParagraph" class="hidden relative  mt-4 p-4 bg-gray-900 rounded-md space-y-2">
+      <button id="closeSuggestions" class="absolute top-0 pr-2 right-0 text-red-500 hover:text-red-700 text-sm font-bold">x</button>
+      <!-- Container to append suggestion items -->
+      <div id="suggestionContent" class="pt-2"></div>
+    </div>
 
 
     <script>
@@ -160,11 +164,11 @@ class SmartCommitViewProvider {
         const message = event.data;
         switch (message.command) {
           case "setSuggestionMessage":
-            const suggestionParagraph = document.getElementById("suggestionParagraph");
-            suggestionParagraph.innerHTML = ""; // Clear previous content
+            const suggestionContent = document.getElementById("suggestionContent");
+            suggestionContent.innerHTML = ""; // Clear previous content
             message.message.forEach((line, index) => {
               const suggestionDiv = document.createElement("div");
-              suggestionDiv.className = "flex items-start space-x-2 p-2 bg-gray-800 border border-gray-700 rounded-md";
+              suggestionDiv.className = "flex items-start space-x-2 p-2 mt-2 bg-gray-800 border border-gray-700 rounded-md";
               
               const numberSpan = document.createElement("span");
               numberSpan.className = "font-bold text-blue-400";
@@ -175,12 +179,18 @@ class SmartCommitViewProvider {
               
               suggestionDiv.appendChild(numberSpan);
               suggestionDiv.appendChild(textSpan);
-              suggestionParagraph.appendChild(suggestionDiv);
+              suggestionContent.appendChild(suggestionDiv);
             });
             break;
           default:
             console.log("Unknown command", message.command);
         }
+      });
+
+      document.getElementById("closeSuggestions").addEventListener("click", () => {
+        const suggestionParagraph = document.getElementById("suggestionParagraph");
+        document.getElementById("suggestionContent").innerHTML = "";
+        suggestionParagraph.classList.add("hidden");
       });
 
     </script>
