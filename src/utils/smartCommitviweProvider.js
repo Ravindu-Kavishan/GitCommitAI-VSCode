@@ -1,4 +1,6 @@
 const vscode = require("vscode");
+const fs = require("fs");
+const path = require("path");
 const { autofillCommitMessage } = require("../commands/autofillCommitMessage");
 const { commit } = require("./commit");
 const {
@@ -12,6 +14,49 @@ const { makeSuggestion } = require("./makesuggestions");
 class SmartCommitViewProvider {
   constructor(extensionUri) {
     this.extensionUri = extensionUri;
+  }
+
+  getHtmlContent(filename) {
+    const filePath = path.join(__dirname, filename);
+    return fs.readFileSync(filePath, "utf8");
+  }
+  createNewWebviewPanel() {
+    const panel = vscode.window.createWebviewPanel(
+      "Web view",
+      "Smart Commit Web View",
+      vscode.ViewColumn.One,
+      { enableScripts: true,
+        retainContextWhenHidden: true,
+        portMapping: [
+            { webviewPort: 8000, extensionHostPort: 8000 }
+        ]
+       }
+    );
+// 
+    const reactDistPath = vscode.Uri.file(
+      path.join(__dirname, "window", "dist")
+    );
+    const reactDistUri = panel.webview.asWebviewUri(reactDistPath);
+// 
+    const reactIndexPath = path.join(
+      __dirname,
+      "window",
+      "dist",
+      "index.html"
+    );
+    let htmlContent = fs.readFileSync(reactIndexPath, "utf8");
+// 
+    // 🔹 Replace absolute paths with webview-compatible URIs
+    htmlContent = htmlContent.replace(
+      /src="\//g,
+      `src="${reactDistUri.toString()}/`
+    );
+    htmlContent = htmlContent.replace(
+      /href="\//g,
+      `href="${reactDistUri.toString()}/`
+    );
+// 
+    panel.webview.html = htmlContent;
   }
 
   resolveWebviewView(webviewView, context, token) {
@@ -42,6 +87,8 @@ class SmartCommitViewProvider {
         case "makesuggestions":
           makeSuggestion(message.commitmessage, webviewView);
           break;
+        case "openNewWindow":
+          this.createNewWebviewPanel();
         default:
           console.log("Unknown command", message.command);
       }
@@ -112,10 +159,16 @@ class SmartCommitViewProvider {
       <!-- Container to append suggestion items -->
       <div id="suggestionContent" class="pt-2"></div>
     </div>
+    <button
+      id="signInBtn"
+      class="fixed bottom-4 right-4 p-2 bg-blue-800 text-white rounded-sm hover:bg-blue-600 transition duration-200">
+      Sign In
+    </button>
+
 
 
     <script>
-        const vscode = acquireVsCodeApi();
+    const vscode = acquireVsCodeApi();
 
         document.getElementById("autofillBtn").addEventListener("click", () => {
             vscode.postMessage({ command: "autofillCommitMessage" });
@@ -191,6 +244,10 @@ class SmartCommitViewProvider {
         const suggestionParagraph = document.getElementById("suggestionParagraph");
         document.getElementById("suggestionContent").innerHTML = "";
         suggestionParagraph.classList.add("hidden");
+      });
+
+      document.getElementById("signInBtn").addEventListener("click", () => {
+        vscode.postMessage({ command: "openNewWindow" });
       });
 
     </script>
