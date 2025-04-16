@@ -10,6 +10,7 @@ const {
   multiLineCommitMessage,
 } = require("../commands/multiLineCommitMessage");
 const { makeSuggestion } = require("./makesuggestions");
+const {selectRules}=require("./selectRules");
 
 class SmartCommitViewProvider {
   constructor(extensionUri) {
@@ -87,8 +88,12 @@ class SmartCommitViewProvider {
         case "makesuggestions":
           makeSuggestion(message.commitmessage, webviewView);
           break;
+        case "selectRules":
+          selectRules();
+          break;
         case "openNewWindow":
           this.createNewWebviewPanel();
+          break;
         default:
           console.log("Unknown command", message.command);
       }
@@ -160,6 +165,12 @@ class SmartCommitViewProvider {
       <div id="suggestionContent" class="pt-2"></div>
     </div>
     <button
+        id="selectRulesBtn"
+        class="w-full p-1 bg-blue-800 text-white rounded-sm hover:bg-blue-600 transition duration-200"
+      >
+        Select Rules set
+      </button>
+    <button
       id="signInBtn"
       class="fixed bottom-4 right-4 p-2 bg-blue-800 text-white rounded-sm hover:bg-blue-600 transition duration-200">
       Sign In
@@ -187,7 +198,7 @@ class SmartCommitViewProvider {
 
         document.getElementById("commitBtn").addEventListener("click", () => {
             const commitMessage = document.getElementById("commitMessage").value;
-            vscode.postMessage({ command: "commit", commitmessage: commitMessage });  // Corrected syntax
+            vscode.postMessage({ command: "commit", commitmessage: commitMessage }); 
             document.getElementById("commitMessage").value = ""; 
         });
 
@@ -245,6 +256,10 @@ class SmartCommitViewProvider {
         document.getElementById("suggestionContent").innerHTML = "";
         suggestionParagraph.classList.add("hidden");
       });
+
+       document.getElementById("selectRulesBtn").addEventListener("click", () => {
+            vscode.postMessage({ command: "selectRules"});  
+        });
 
       document.getElementById("signInBtn").addEventListener("click", () => {
         vscode.postMessage({ command: "openNewWindow" });
