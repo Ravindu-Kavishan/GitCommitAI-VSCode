@@ -8,9 +8,9 @@ async function selectRules(webviewView) {
       command: "retrivedRules",
       message: progects,
     });
-
-    vscode.window.showInformationMessage("Rules retrived!");
-    console.log(progects);
+    if (progects != null) {
+      vscode.window.showInformationMessage("Rules retrived!");
+    }
   } catch (error) {
     handleError(error);
   }

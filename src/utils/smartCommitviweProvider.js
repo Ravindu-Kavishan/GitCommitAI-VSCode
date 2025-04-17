@@ -12,6 +12,7 @@ const {
 const { makeSuggestion } = require("./makesuggestions");
 const {selectRules}=require("./selectRules");
 const {selectProject}=require("./selectProject");
+const {logedIn}=require("./logedIn");
 
 class SmartCommitViewProvider {
   constructor(extensionUri) {
@@ -94,6 +95,9 @@ class SmartCommitViewProvider {
           break;
         case "selectProject":
           selectProject(message.selectedProject);
+          break;
+        case "logedIn":
+          logedIn(message.email);
           break;
         case "openNewWindow":
           this.createNewWebviewPanel();
@@ -184,6 +188,11 @@ class SmartCommitViewProvider {
       class="fixed bottom-4 right-4 p-2 bg-blue-800 text-white rounded-sm hover:bg-blue-600 transition duration-200">
       Sign In
     </button>
+    <button
+      id="logInBtn"
+      class="fixed bottom-4 right-4 p-2 bg-blue-800 text-white rounded-sm hover:bg-blue-600 transition duration-200">
+      Log In
+    </button>
 
 
 
@@ -231,18 +240,24 @@ class SmartCommitViewProvider {
         suggestionParagraph.classList.add("hidden");
       });
 
-      document.getElementById("closeProjects").addEventListener("click", () => {
-        const suggestionParagraph = document.getElementById("suggestionParagraph");
-        document.getElementById("suggestionContent").innerHTML = "";
-        suggestionParagraph.classList.add("hidden");
-      });
+      
 
        document.getElementById("selectRulesBtn").addEventListener("click", () => {
             vscode.postMessage({ command: "selectRules"});  
         });
 
+      document.getElementById("closeProjects").addEventListener("click", () => {
+        const projectsDiv = document.getElementById("projectsDiv");
+        document.getElementById("Projectnames").innerHTML = "";
+        projectsDiv.classList.add("hidden");
+      });
+
       document.getElementById("signInBtn").addEventListener("click", () => {
         vscode.postMessage({ command: "openNewWindow" });
+      });
+
+      document.getElementById("logInBtn").addEventListener("click", () => {
+        vscode.postMessage({ command: "logedIn",email: "ravindu@uom.com" });
       });
 
 
