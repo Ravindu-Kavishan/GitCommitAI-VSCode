@@ -118,12 +118,30 @@ class SmartCommitViewProvider {
   </head>
   <body class="p-4 bg-black text-white">
     <div class="flex flex-col space-y-4">
-      <textarea
-        id="commitMessage"
-        placeholder="Type Commit With Suggestions"
-        class="w-full p-1 border border-gray-600 rounded-sm shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-gray-800 text-white resize-none"
-        rows="3"
-      ></textarea>
+      <div class="relative w-full">
+        <div
+          id="ghost"
+          class="absolute top-0 left-0 z-0
+                w-full h-full p-1
+                font-mono text-base leading-relaxed
+                text-gray-400 whitespace-pre-wrap break-words
+                pointer-events-none box-border"
+        ></div>
+
+        <!-- User Input Area -->
+        <textarea
+          id="commitMessage"
+          placeholder="Type Commit With Suggestions"
+          class="relative z-10 w-full p-1
+                border border-gray-600 rounded-sm shadow-sm
+                focus:ring-2 focus:ring-blue-500 focus:outline-none
+                bg-transparent text-white resize-none
+                font-mono text-base leading-relaxed box-border"
+          rows="3"
+        ></textarea>
+      </div>
+
+
 
       <button
         id="commitBtn"
@@ -198,6 +216,48 @@ class SmartCommitViewProvider {
 
     <script>
     const vscode = acquireVsCodeApi();
+    let prediction = '';
+    const textarea = document.getElementById('commitMessage');
+    const ghost = document.getElementById('ghost');
+
+    async function getNextWord(currentText) {
+      try {
+        const response = await fetch("http://localhost:8000/nextWord", {
+          method: "GET",
+          headers: { "Content-Type": "application/json" }
+        });
+        const data = await response.json();
+        return data.word;
+      } catch (err) {
+        console.error("Prediction error:", err);
+        return '';
+      }
+    }
+    
+    function updateGhost(realText = textarea.value, suggestion = prediction) {
+      ghost.innerHTML = realText + \`<span class="text-gray-400">\${suggestion}</span>\`;
+    }
+
+    textarea.addEventListener("keydown", async function (event) {
+      if (event.key === "Tab" && prediction) {
+        event.preventDefault();
+        textarea.value += prediction + '';
+        prediction = '';
+        updateGhost();
+      }
+    });
+
+    textarea.addEventListener("input", async function () {
+      const value = textarea.value;
+      updateGhost(value, '');
+
+      if (value.charAt(value.length - 1) === ' ') {
+        prediction = await getNextWord(value);
+        updateGhost(value, prediction);
+      }
+    });
+
+    
 
         document.getElementById("autofillBtn").addEventListener("click", () => {
             vscode.postMessage({ command: "autofillCommitMessage" });
