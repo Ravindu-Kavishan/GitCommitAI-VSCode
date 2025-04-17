@@ -13,6 +13,7 @@ const { makeSuggestion } = require("./makesuggestions");
 const {selectRules}=require("./selectRules");
 const {selectProject}=require("./selectProject");
 const {logedIn}=require("./logedIn");
+const {getNextWord}=require("./getNextWord");
 
 class SmartCommitViewProvider {
   constructor(extensionUri) {
@@ -77,6 +78,9 @@ class SmartCommitViewProvider {
       switch (message.command) {
         case "autofillCommitMessage":
           autofillCommitMessage(webviewView);
+          break;
+        case "getNextWord":
+          getNextWord(webviewView,message.currentmessage);
           break;
         case "commit":
           commit(message.commitmessage); // Pass commit message to function
@@ -220,20 +224,6 @@ class SmartCommitViewProvider {
     const textarea = document.getElementById('commitMessage');
     const ghost = document.getElementById('ghost');
 
-    async function getNextWord(currentText) {
-      try {
-        const response = await fetch("http://localhost:8000/nextWord", {
-          method: "GET",
-          headers: { "Content-Type": "application/json" }
-        });
-        const data = await response.json();
-        return data.word;
-      } catch (err) {
-        console.error("Prediction error:", err);
-        return '';
-      }
-    }
-    
     function updateGhost(realText = textarea.value, suggestion = prediction) {
       ghost.innerHTML = realText + \`<span class="text-gray-400">\${suggestion}</span>\`;
     }
@@ -252,8 +242,7 @@ class SmartCommitViewProvider {
       updateGhost(value, '');
 
       if (value.charAt(value.length - 1) === ' ') {
-        prediction = await getNextWord(value);
-        updateGhost(value, prediction);
+        vscode.postMessage({ command: "getNextWord",currentmessage :value});
       }
     });
 
@@ -377,7 +366,10 @@ class SmartCommitViewProvider {
               });
             });
             break;
-
+          case "gotnextWord":
+            console.log(message.next_word);
+            prediction = message.next_word || "";
+            updateGhost(message.value, prediction);
           default:
             console.log("Unknown command", message.command);
         }

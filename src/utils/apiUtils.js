@@ -73,10 +73,34 @@ async function getProjects() {
   }
 }
 
+
+async function suggestNextWord(gitdiff,currentmessage){
+  const backendUrl = "http://localhost:8000/nextWord";
+
+  try {
+
+    const response = await axios.post(backendUrl, {
+      git_diff: gitdiff,
+      commit_msg: currentmessage,
+    });
+
+    return response.data.next_word;
+  } catch (error) {
+    console.error("Error response:", error.response?.data);
+    vscode.window.showErrorMessage(
+      `Backend error: ${error.response?.status} - ${
+        error.response?.data?.message || error.message
+      }`
+    );
+    return null;
+  }
+}
+
 // /admin/get_projects_and_rules
 
 module.exports = {
   generateCommitMessage,
   generateCommitSuggestions,
   getProjects,
+  suggestNextWord
 };
