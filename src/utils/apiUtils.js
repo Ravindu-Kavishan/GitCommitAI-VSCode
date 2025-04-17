@@ -44,4 +44,28 @@ async function generateCommitSuggestions(commitmessage) {
   }
 }
 
-module.exports = { generateCommitMessage ,generateCommitSuggestions};
+
+
+async function getProjects() {
+  const backendUrl = "http://127.0.0.1:8000/get_projects";
+  
+
+  try {
+    const response = await axios.post(backendUrl);
+
+    // console.log("Response:", response.data);
+    return response.data.projects;
+  } catch (error) {
+    console.error("Error response:", error.response?.data);
+    vscode.window.showErrorMessage(
+      `Backend error: ${error.response?.status} - ${error.response?.data?.message || error.message}`
+    );
+    return null;
+  }
+}
+
+
+// /admin/get_projects_and_rules
+
+module.exports = { generateCommitMessage ,generateCommitSuggestions,getProjects};
+

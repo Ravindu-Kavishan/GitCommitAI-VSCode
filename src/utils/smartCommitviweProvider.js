@@ -11,6 +11,7 @@ const {
 } = require("../commands/multiLineCommitMessage");
 const { makeSuggestion } = require("./makesuggestions");
 const {selectRules}=require("./selectRules");
+const {selectProject}=require("./selectProject");
 
 class SmartCommitViewProvider {
   constructor(extensionUri) {
@@ -89,7 +90,10 @@ class SmartCommitViewProvider {
           makeSuggestion(message.commitmessage, webviewView);
           break;
         case "selectRules":
-          selectRules();
+          selectRules(webviewView);
+          break;
+        case "selectProject":
+          selectProject(message.selectedProject);
           break;
         case "openNewWindow":
           this.createNewWebviewPanel();
@@ -166,10 +170,15 @@ class SmartCommitViewProvider {
     </div>
     <button
         id="selectRulesBtn"
-        class="w-full p-1 bg-blue-800 text-white rounded-sm hover:bg-blue-600 transition duration-200"
+        class="w-full p-1 mt-4 bg-blue-800 text-white rounded-sm hover:bg-blue-600 transition duration-200"
       >
         Select Rules set
-      </button>
+    </button>
+    <div id="projectsDiv" class="hidden relative  mt-4 p-4 bg-gray-900 rounded-md space-y-2">
+      <button id="closeProjects" class="absolute top-0 pr-2 right-0 text-red-500 hover:text-red-700 text-sm font-bold">x</button>
+      <!-- Container to append suggestion items -->
+      <div id="Projectnames" class="pt-2"></div>
+    </div>
     <button
       id="signInBtn"
       class="fixed bottom-4 right-4 p-2 bg-blue-800 text-white rounded-sm hover:bg-blue-600 transition duration-200">
@@ -185,16 +194,6 @@ class SmartCommitViewProvider {
             vscode.postMessage({ command: "autofillCommitMessage" });
         });
 
-        window.addEventListener("message", (event) => {
-          const message = event.data;
-          switch (message.command) {
-            case "setCommitMessage":
-              document.getElementById("commitMessage").value = message.message;
-              break;
-            default:
-              console.log("Unknown command", message.command);
-          }
-        });
 
         document.getElementById("commitBtn").addEventListener("click", () => {
             const commitMessage = document.getElementById("commitMessage").value;
@@ -224,12 +223,38 @@ class SmartCommitViewProvider {
           document.getElementById("suggestionParagraph").classList.remove("hidden");
         });
 
-        window.addEventListener("message", (event) => {
+        
+
+      document.getElementById("closeSuggestions").addEventListener("click", () => {
+        const suggestionParagraph = document.getElementById("suggestionParagraph");
+        document.getElementById("suggestionContent").innerHTML = "";
+        suggestionParagraph.classList.add("hidden");
+      });
+
+      document.getElementById("closeProjects").addEventListener("click", () => {
+        const suggestionParagraph = document.getElementById("suggestionParagraph");
+        document.getElementById("suggestionContent").innerHTML = "";
+        suggestionParagraph.classList.add("hidden");
+      });
+
+       document.getElementById("selectRulesBtn").addEventListener("click", () => {
+            vscode.postMessage({ command: "selectRules"});  
+        });
+
+      document.getElementById("signInBtn").addEventListener("click", () => {
+        vscode.postMessage({ command: "openNewWindow" });
+      });
+
+
+      window.addEventListener("message", (event) => {
         const message = event.data;
         switch (message.command) {
+          case "setCommitMessage":
+            document.getElementById("commitMessage").value = message.message;
+            break;
           case "setSuggestionMessage":
             const suggestionContent = document.getElementById("suggestionContent");
-            suggestionContent.innerHTML = ""; // Clear previous content
+            suggestionContent.innerHTML = "";
             message.message.forEach((line, index) => {
               const suggestionDiv = document.createElement("div");
               suggestionDiv.className = "flex items-start space-x-2 p-2 mt-2 bg-gray-800 border border-gray-700 rounded-md";
@@ -246,23 +271,41 @@ class SmartCommitViewProvider {
               suggestionContent.appendChild(suggestionDiv);
             });
             break;
+          case "retrivedRules":
+            const Projectnames = document.getElementById("Projectnames");
+            const projectsDiv = document.getElementById("projectsDiv");
+
+            Projectnames.innerHTML = "";
+            projectsDiv.classList.remove("hidden");
+
+            message.message.forEach((line, index) => {
+              const projectItem = document.createElement("div");
+              projectItem.className = "flex items-start space-x-2 p-2 mt-2 bg-gray-800 border border-gray-700 rounded-md cursor-pointer hover:bg-gray-700 transition";
+              
+              const numberSpan = document.createElement("span");
+              numberSpan.className = "font-bold text-blue-400";
+              numberSpan.textContent = \`\${index + 1}.\`;
+
+              const textSpan = document.createElement("span");
+              textSpan.textContent = line;
+
+              projectItem.appendChild(numberSpan);
+              projectItem.appendChild(textSpan);
+              Projectnames.appendChild(projectItem);
+
+              // 💡 Add click event to send rule name back to extension
+              projectItem.addEventListener("click", () => {
+                vscode.postMessage({
+                  command: "selectProject",
+                  selectedProject: line,  // Send the rule name
+                });
+              });
+            });
+            break;
+
           default:
             console.log("Unknown command", message.command);
         }
-      });
-
-      document.getElementById("closeSuggestions").addEventListener("click", () => {
-        const suggestionParagraph = document.getElementById("suggestionParagraph");
-        document.getElementById("suggestionContent").innerHTML = "";
-        suggestionParagraph.classList.add("hidden");
-      });
-
-       document.getElementById("selectRulesBtn").addEventListener("click", () => {
-            vscode.postMessage({ command: "selectRules"});  
-        });
-
-      document.getElementById("signInBtn").addEventListener("click", () => {
-        vscode.postMessage({ command: "openNewWindow" });
       });
 
     </script>
