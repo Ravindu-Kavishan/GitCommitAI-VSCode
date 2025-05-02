@@ -18,6 +18,7 @@ async function activate(context) {
       new SmartCommitViewProvider(context.extensionUri)
     )
   );
+  
 
   // Register the autofill commit message command
   const autofillCommand = vscode.commands.registerCommand(

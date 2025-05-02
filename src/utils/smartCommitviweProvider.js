@@ -10,10 +10,10 @@ const {
   multiLineCommitMessage,
 } = require("../commands/multiLineCommitMessage");
 const { makeSuggestion } = require("./makesuggestions");
-const {selectRules}=require("./selectRules");
-const {selectProject}=require("./selectProject");
-const {logedIn}=require("./logedIn");
-const {getNextWord}=require("./getNextWord");
+const { selectRules } = require("./selectRules");
+const { selectProject } = require("./selectProject");
+const { logedIn } = require("./logedIn");
+const { getNextWord } = require("./getNextWord");
 
 class SmartCommitViewProvider {
   constructor(extensionUri) {
@@ -27,29 +27,23 @@ class SmartCommitViewProvider {
   createNewWebviewPanel() {
     const panel = vscode.window.createWebviewPanel(
       "Web view",
-      "Smart Commit Web View",
+      "SmartCommitWebView",
       vscode.ViewColumn.One,
-      { enableScripts: true,
+      {
+        enableScripts: true,
         retainContextWhenHidden: true,
-        portMapping: [
-            { webviewPort: 8000, extensionHostPort: 8000 }
-        ]
-       }
+        portMapping: [{ webviewPort: 8000, extensionHostPort: 8000 }],
+      }
     );
-// 
+    //
     const reactDistPath = vscode.Uri.file(
       path.join(__dirname, "window", "dist")
     );
     const reactDistUri = panel.webview.asWebviewUri(reactDistPath);
-// 
-    const reactIndexPath = path.join(
-      __dirname,
-      "window",
-      "dist",
-      "index.html"
-    );
+    //
+    const reactIndexPath = path.join(__dirname, "window", "dist", "index.html");
     let htmlContent = fs.readFileSync(reactIndexPath, "utf8");
-// 
+    //
     // 🔹 Replace absolute paths with webview-compatible URIs
     htmlContent = htmlContent.replace(
       /src="\//g,
@@ -59,8 +53,19 @@ class SmartCommitViewProvider {
       /href="\//g,
       `href="${reactDistUri.toString()}/`
     );
-// 
+    //
     panel.webview.html = htmlContent;
+
+    panel.webview.onDidReceiveMessage((message) => {
+      switch (message.command) {
+        case "logedInFromWebView":
+          vscode.window.showInformationMessage(message.email);
+          logedIn(message.email);
+          break;
+        default:
+          console.log("Unknown command", message.command);
+      }
+    });
   }
 
   resolveWebviewView(webviewView, context, token) {
@@ -80,7 +85,7 @@ class SmartCommitViewProvider {
           autofillCommitMessage(webviewView);
           break;
         case "getNextWord":
-          getNextWord(webviewView,message.currentmessage);
+          getNextWord(webviewView, message.currentmessage);
           break;
         case "commit":
           commit(message.commitmessage); // Pass commit message to function
@@ -95,13 +100,11 @@ class SmartCommitViewProvider {
           makeSuggestion(message.commitmessage, webviewView);
           break;
         case "selectRules":
+          console.log(message);
           selectRules(webviewView);
           break;
         case "selectProject":
           selectProject(message.selectedProject);
-          break;
-        case "logedIn":
-          logedIn(message.email);
           break;
         case "openNewWindow":
           this.createNewWebviewPanel();
@@ -210,11 +213,7 @@ class SmartCommitViewProvider {
       class="fixed bottom-4 right-4 p-2 bg-blue-800 text-white rounded-sm hover:bg-blue-600 transition duration-200">
       Sign In
     </button>
-    <button
-      id="logInBtn"
-      class="fixed bottom-4 right-4 p-2 bg-blue-800 text-white rounded-sm hover:bg-blue-600 transition duration-200">
-      Log In
-    </button>
+  
 
 
 
@@ -255,6 +254,7 @@ class SmartCommitViewProvider {
 
         document.getElementById("commitBtn").addEventListener("click", () => {
             const commitMessage = document.getElementById("commitMessage").value;
+            ghost.innerHTML="";
             vscode.postMessage({ command: "commit", commitmessage: commitMessage }); 
             document.getElementById("commitMessage").value = ""; 
         });
@@ -302,13 +302,9 @@ class SmartCommitViewProvider {
       });
 
       document.getElementById("signInBtn").addEventListener("click", () => {
+        console.log("fuck")
         vscode.postMessage({ command: "openNewWindow" });
       });
-
-      document.getElementById("logInBtn").addEventListener("click", () => {
-        vscode.postMessage({ command: "logedIn",email: "ravindu@uom.com" });
-      });
-
 
       window.addEventListener("message", (event) => {
         const message = event.data;
@@ -370,6 +366,7 @@ class SmartCommitViewProvider {
             console.log(message.next_word);
             prediction = message.next_word || "";
             updateGhost(message.value, prediction);
+            break;
           default:
             console.log("Unknown command", message.command);
         }
