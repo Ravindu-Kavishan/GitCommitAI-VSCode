@@ -1,5 +1,7 @@
 const vscode = require("vscode");
 const { getProjects } = require("../utils/apiUtils");
+const sharedContext = require("./sharedContext");
+
 
 async function selectRules(webviewView) {
   try {
@@ -7,10 +9,8 @@ async function selectRules(webviewView) {
     webviewView.webview.postMessage({
       command: "retrivedRules",
       message: progects,
+      selectedProject:sharedContext.project
     });
-    if (progects != null) {
-      vscode.window.showInformationMessage("Rules retrived!");
-    }
   } catch (error) {
     handleError(error);
   }

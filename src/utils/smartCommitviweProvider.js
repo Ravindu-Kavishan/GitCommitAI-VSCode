@@ -104,7 +104,7 @@ class SmartCommitViewProvider {
           selectRules(webviewView);
           break;
         case "selectProject":
-          selectProject(message.selectedProject);
+          selectProject(message.selectedProject,webviewView);
           break;
         case "openNewWindow":
           this.createNewWebviewPanel();
@@ -302,7 +302,6 @@ class SmartCommitViewProvider {
       });
 
       document.getElementById("signInBtn").addEventListener("click", () => {
-        console.log("fuck")
         vscode.postMessage({ command: "openNewWindow" });
       });
 
@@ -334,6 +333,7 @@ class SmartCommitViewProvider {
           case "retrivedRules":
             const Projectnames = document.getElementById("Projectnames");
             const projectsDiv = document.getElementById("projectsDiv");
+            const selectedProject = message.selectedProject;
 
             Projectnames.innerHTML = "";
             projectsDiv.classList.remove("hidden");
@@ -349,6 +349,14 @@ class SmartCommitViewProvider {
               const textSpan = document.createElement("span");
               textSpan.textContent = line;
 
+              const checkbox = document.createElement("input");
+              checkbox.className = "w-4 h-4 rounded border border-gray-400 mt-1";
+              if (line === selectedProject) {
+                checkbox.classList.add("bg-blue-600");
+                checkbox.checked = line === selectedProject;
+              }
+
+              projectItem.appendChild(checkbox);
               projectItem.appendChild(numberSpan);
               projectItem.appendChild(textSpan);
               Projectnames.appendChild(projectItem);
