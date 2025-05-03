@@ -59,7 +59,6 @@ class SmartCommitViewProvider {
     panel.webview.onDidReceiveMessage((message) => {
       switch (message.command) {
         case "logedInFromWebView":
-          vscode.window.showInformationMessage(message.email);
           logedIn(message.email);
           break;
         default:

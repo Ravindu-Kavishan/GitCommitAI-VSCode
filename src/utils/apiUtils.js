@@ -3,7 +3,7 @@ const vscode = require("vscode");
 const sharedContext = require("./sharedContext");
 
 async function generateCommitMessage(gitDiff) {
-  const backendUrl = "http://127.0.0.1:8000/generate-commit-message/";
+  const backendUrl = "http://smartcommitai-backend-cdf5hgekexgxh2en.centralindia-01.azurewebsites.net/generate-commit-message/";
 
   try {
     const response = await axios.post(backendUrl, {
@@ -25,7 +25,7 @@ async function generateCommitMessage(gitDiff) {
 }
 
 async function generateCommitSuggestions(commitmessage) {
-  const backendUrl = "http://127.0.0.1:8000/generate-commit-suggestions/";
+  const backendUrl = "http://smartcommitai-backend-cdf5hgekexgxh2en.centralindia-01.azurewebsites.net/generate-commit-suggestions/";
 
   try {
     const response = await axios.post(backendUrl, {
@@ -46,7 +46,7 @@ async function generateCommitSuggestions(commitmessage) {
 }
 
 async function getProjects() {
-  const backendUrl = "http://127.0.0.1:8000/get_projects";
+  const backendUrl = "http://smartcommitai-backend-cdf5hgekexgxh2en.centralindia-01.azurewebsites.net/get_projects";
 
   try {
     // Retrieve email from local storage
@@ -75,7 +75,7 @@ async function getProjects() {
 
 
 async function suggestNextWord(gitdiff,currentmessage){
-  const backendUrl = "http://localhost:8000/nextWord";
+  const backendUrl = "http://smartcommitai-backend-cdf5hgekexgxh2en.centralindia-01.azurewebsites.net/nextWord";
 
   try {
 
