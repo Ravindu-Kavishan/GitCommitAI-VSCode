@@ -3,8 +3,8 @@ const vscode = require("vscode");
 const sharedContext = require("./sharedContext");
 
 async function generateCommitMessage(gitDiff) {
-  // const backendUrl = "http://smartcommitai-backend-cdf5hgekexgxh2en.centralindia-01.azurewebsites.net/generate-commit-message/";
-  const backendUrl = "http://localhost:8000/generate-commit-message/";
+  const backendUrl = "http://192.168.8.105:8000/generate-commit-message/";
+  // const backendUrl = "https://gitcommitai-backend-aafdg3cwdtctc9e6.centralindia-01.azurewebsites.net/generate-commit-message/";
 
   try {
     const response = await axios.post(backendUrl, {
@@ -26,7 +26,8 @@ async function generateCommitMessage(gitDiff) {
 }
 
 async function generateCommitSuggestions(commitmessage) {
-  const backendUrl = "http://localhost:8000/generate-commit-suggestions/";
+  // const backendUrl = "https://gitcommitai-backend-aafdg3cwdtctc9e6.centralindia-01.azurewebsites.net/generate-commit-suggestions/";
+  const backendUrl = "http://192.168.8.105:8000/generate-commit-suggestions/";
 
   try {
     const response = await axios.post(backendUrl, {
@@ -46,7 +47,8 @@ async function generateCommitSuggestions(commitmessage) {
 }
 
 async function getProjects() {
-  const backendUrl = "http://localhost:8000/get_projects";
+  const backendUrl = "http://192.168.8.105:8000/get_projects";
+  // const backendUrl = "https://gitcommitai-backend-aafdg3cwdtctc9e6.centralindia-01.azurewebsites.net/get_projects";
 
   try {
     // Retrieve email from local storage
@@ -73,7 +75,8 @@ async function getProjects() {
 }
 
 async function suggestNextWord(gitdiff, currentmessage) {
-  const backendUrl = "http://localhost:8000/nextWord";
+  const backendUrl = "http://192.168.8.105:8000/nextWord";
+  // const backendUrl = "https://gitcommitai-backend-aafdg3cwdtctc9e6.centralindia-01.azurewebsites.net/nextWord";
 
   try {
     const response = await axios.post(backendUrl, {
@@ -94,7 +97,8 @@ async function suggestNextWord(gitdiff, currentmessage) {
 }
 
 async function saveCommit(git_diff, commit_message) {
-  const backendUrl = "http://localhost:8000/add_project_commit";
+  const backendUrl = "http://192.168.8.105:8000/add_project_commit";
+  // const backendUrl = "https://gitcommitai-backend-aafdg3cwdtctc9e6.centralindia-01.azurewebsites.net/add_project_commit";
 
   try {
     if (!sharedContext.email) {
