@@ -32,6 +32,7 @@ async function generateCommitSuggestions(commitmessage) {
   try {
     const response = await axios.post(backendUrl, {
       commit_message: commitmessage,
+      project_name: sharedContext.project,
     });
 
     return response.data.suggestions;
